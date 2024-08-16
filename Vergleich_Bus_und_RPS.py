@@ -599,36 +599,37 @@ def compare_emissions():
         xaxis_tickangle=-45
     )
     st.plotly_chart(fig2)
+        # Erstelle zwei Spalten für jede Zeile
+    col1, col2 = st.columns([3, 1])  # Verhältnis 3:1 sorgt dafür, dass die linke Spalte breiter ist
+    
+    # Erste Zeile
+    with col1:
+        st.write("**CO2-Emissionen Bus (angepasst):**")
+    with col2:
+        st.write(f"{new_co2_wtw:.2f} g CO2e/Pkm")
+    
+    # Zweite Zeile
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.write("**Auslastung Bus (angepasst):**")
+    with col2:
+        st.write(f"{adjusted_occupancy:.2f}%")
+    
+    # Dritte Zeile
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.write("**Prozentuale Differenz zur durchschnittlichen deutschen Auslastung (18.7 %, VDV Statistik 2022):**")
+    with col2:
+        st.write(f"{(adjusted_occupancy - initial_occupancy) / initial_occupancy * 100:.2f}%")
+    
+    # Vierte Zeile
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.write("**CO2-Emissionen Ridepooling-System:**")
+    with col2:
+        st.write(f"{st.session_state['co2_emissionen_pro_personenkilometer_rps_g']:.2f} g CO2e/Pkm")
     
 compare_emissions()
 
-# Erstelle zwei Spalten für jede Zeile
-col1, col2 = st.columns([3, 1])  # Verhältnis 3:1 sorgt dafür, dass die linke Spalte breiter ist
 
-# Erste Zeile
-with col1:
-    st.write("**CO2-Emissionen Bus (angepasst):**")
-with col2:
-    st.write(f"{new_co2_wtw:.2f} g CO2e/Pkm")
-
-# Zweite Zeile
-col1, col2 = st.columns([3, 1])
-with col1:
-    st.write("**Auslastung Bus (angepasst):**")
-with col2:
-    st.write(f"{adjusted_occupancy:.2f}%")
-
-# Dritte Zeile
-col1, col2 = st.columns([3, 1])
-with col1:
-    st.write("**Prozentuale Differenz zur durchschnittlichen deutschen Auslastung (18.7 %, VDV Statistik 2022):**")
-with col2:
-    st.write(f"{(adjusted_occupancy - initial_occupancy) / initial_occupancy * 100:.2f}%")
-
-# Vierte Zeile
-col1, col2 = st.columns([3, 1])
-with col1:
-    st.write("**CO2-Emissionen Ridepooling-System:**")
-with col2:
-    st.write(f"{st.session_state['co2_emissionen_pro_personenkilometer_rps_g']:.2f} g CO2e/Pkm")
 
