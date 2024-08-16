@@ -9,7 +9,7 @@ st.set_page_config(page_title="Oekobilanzierung Ridepooling", layout="centered",
 
 # Funktion zur Anzeige der Sidebar
 def show_sidebar():
-    st.sidebar.image("C:\\Users\\Peter\\Desktop\\Programmierung_Oekobilanzierung\\5.GUI_Ökobilanzierung\\Bilder\\Logo_of_Fachhochschule_Münster.png", use_column_width=True)
+    st.sidebar.image("Logo_of_Fachhochschule_Münster.png", use_column_width=True)
     st.sidebar.markdown("""
         <style>
             .css-18e3th9 {  
@@ -45,14 +45,6 @@ def validate_input_int(text):
         return 0 <= value <= 100
     except ValueError:
         return False
-
-# Funktion zur Darstellung der Methodik-Sektion
-def show_methodik_section():
-    st.subheader("Methodik der Ökobilanzierung")
-    with st.expander("**Methodik**"):
-        st.write("Die methodische Vorgehensweise dieser Studie besteht darin, zunächst zu ermitteln, wie viele Fahrgäste das Ridepooling-System transportiert und wie viel Energie dabei verbraucht wird. Dieser Energieverbrauch wird auf eine vergleichbare Einheit umgerechnet, den Energieverbrauch pro Personenkilometer. Anschließend wird die Transportleistung des Ridepooling-Systems mit dem Mobilitätsverhalten verglichen, welches ohne ein Ridepooling-System auftreten würde, also mit den alternativ genutzten Verkehrsmitteln. Diese Vorgehensweise ermöglicht es, die ökologische Effizienz des Ridepooling-Systems objektiv bewerten zu können. Der Prozess wird in der untenstehenden Abbildung veranschaulicht.")
-        st.image(r'C:\Users\Peter\Desktop\Programmierung_Oekobilanzierung\5.GUI_Ökobilanzierung\Bilder\Abbildung_Methodik.png', use_column_width=True)
-        st.info("**Hinweis:** Bitte gehen Sie bei der Bearbeitung sukzessiv vor. Die Reihenfolge der Schritte ist vorgegeben und kann nicht verändert werden. Nähere Informationen zur Bearbeitung können Sie folgendem Dokument entnehmen: [FH Münster](https://www.fh-muenster.de/)")
 
 # Funktion zur Darstellung der Allgemeinen Informationen
 # Funktion zur Darstellung der Allgemeinen Informationen
