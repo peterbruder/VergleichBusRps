@@ -62,7 +62,7 @@ with col1:
         buendelungsquote_bus = round(person_km_bus / bus_total_km, 2) if bus_total_km > 0 else 0
         besetzungsquote_bus = round(person_km_bus / occupied_km_bus, 2) if occupied_km_bus > 0 else 0
 
-        st.write(f"CO2-Emissionen bei {bus_transported_passengers} transportierten Fahrgästen für Linienbus: {selected_emission_bus:.2f} kg CO2/pkm")
+        st.write(f"CO2-Emissionen bei {bus_transported_passengers} transportierten Fahrgästen für Linienbus: {selected_emission_bus:.3f} kg CO2/pkm")
         st.write(f"Personenkilometer für Linienbus: {person_km_bus:.2f} pkm")
         st.write(f"Leerkilometeranteil für Linienbus: {leerkilometeranteil_bus:.2f} %")
         st.write(f"Bündelungsquote für Linienbus: {buendelungsquote_bus:.2f} Personen/km")
