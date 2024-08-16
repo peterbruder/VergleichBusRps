@@ -572,9 +572,11 @@ with col2:
 
 
 ################################################################ Vergleich ################################################################
-
-# Funktion zum Vergleich der CO2-Emissionen
 def compare_emissions():
+    if 'co2_emissionen_pro_personenkilometer_rps_g' not in st.session_state:
+        st.error("CO2-Emissionen des Ridepooling-Systems sind nicht verfügbar. Berechne zuerst die Umweltwirkung des Ridepooling-Systems.")
+        return
+
     st.title('Vergleich der CO2-Emissionen')
 
     # Erstellung des Diagramms
@@ -597,10 +599,8 @@ def compare_emissions():
         xaxis_tickangle=-45
     )
     st.plotly_chart(fig2)
-
-
+    
 compare_emissions()
-
 
 # Erstelle zwei Spalten für jede Zeile
 col1, col2 = st.columns([3, 1])  # Verhältnis 3:1 sorgt dafür, dass die linke Spalte breiter ist
