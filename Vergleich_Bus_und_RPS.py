@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 # Setze das Thema auf 'light'
-st.set_page_config(page_title="Oekobilanzierung Ridepooling", layout="centered", initial_sidebar_state="auto")
+st.set_page_config(page_title="Vergleich der Ökobilanzierung von Bus und Ridepooling-System", layout="centered", initial_sidebar_state="auto")
 
 # Funktion zur Anzeige der Sidebar
 def show_sidebar():
@@ -481,10 +481,7 @@ initialize_session_state()
 show_sidebar()
 
 # Grundlegende Konfiguration
-st.title('ÖkoRPS - Ökologische Bewertung von Ridepooling-Systemen')
-
-# Zeige Methodik-Sektion an
-show_methodik_section()
+st.title('Vergleich der Ökobilanzierung von Bus und Ridepooling-System')
 
 st.subheader("Berechnung der Umweltwirkung des Ridepooling-Systems")
 # Zeige Allgemeine Informationen an
