@@ -539,9 +539,9 @@ def calculate_new_CO2eq_wtw(initial_CO2eq, initial_occupancy, adjusted_occupancy
     return initial_CO2eq * (initial_occupancy / adjusted_occupancy)
 
 # Part 1: Calculate Platzausnutzung
-st.subheader('2. Berechnung CO2e-Emissionen Bus')
+st.subheader('2. Berechnung CO2eq-Emissionen Bus')
 with st.expander('**2.1 Berechnung der durchschnittlichen Platzausnutzung des Bus-Systems**'):
-    st.info("**Hinweis:** Die vorausgefüllten Daten beziehen sich auf die durchschnittliche Platzausnutzung im deutschen Durchschnitt (VDV Statistik 2022). Sie können die durchschnittliche Platzausnutzung spezifisch für Ihr Bussystem berechnen. Sie können den errechneten Wert im Folgenden Schritt einsetzen, um einen Vergleich der CO2e-Emissionen zu erhalten.")
+    st.info("**Hinweis:** Die vorausgefüllten Daten beziehen sich auf die durchschnittliche Platzausnutzung im deutschen Durchschnitt (VDV Statistik 2022). Sie können die durchschnittliche Platzausnutzung spezifisch für Ihr Bussystem berechnen. Sie können den errechneten Wert im Folgenden Schritt einsetzen, um einen Vergleich der CO2eq-Emissionen zu erhalten.")
     # Eingabefelder für Personen- und Platzkilometer
     personen_km = st.number_input("Personenkilometer [Mio.]", min_value=0.0, value=24311.0, step=0.1, format="%.1f")
     st.caption("Produkt aus beförderten Personen und der zurückgelegten Entfernung in Kilometern.")
@@ -579,16 +579,16 @@ with st.expander('**2.1 Berechnung der durchschnittlichen Platzausnutzung des Bu
     - **Personenkilometer**: Das Produkt aus beförderten Personen und der zurückgelegten Entfernung in Kilometern.
     - **Platzkilometer**: Das Produkt aus Nutzwagenkilometern und der Platzzahl (Sitz- und Stehplätze) der einzelnen Fahrzeuge.
     - **Durchschnittliche Platzausnutzung**: Wird berechnet als (Personenkilometer / Platzkilometer) * 100.
-    - **CO2e-Ausstoß (WTW)**: Basierend auf der durchschnittlichen Platzausnutzung in Deutschland (18.7 %, VDV Statistik 2022), wird der CO2eäq-Wert (80.54 g CO2ee/Pkm, Umweltfreundlich mobil! Umweltbundesamt, 2021) auf Basis der WTW-Betrachtung angepasst.
+    - **CO2eq-Ausstoß (WTW)**: Basierend auf der durchschnittlichen Platzausnutzung in Deutschland (18.7 %, VDV Statistik 2022), wird der CO2eäq-Wert (80.54 g CO2ee/Pkm, Umweltfreundlich mobil! Umweltbundesamt, 2021) auf Basis der WTW-Betrachtung angepasst.
     """)
 
     # Part 2: Adjust Platzausnutzung and calculate CO2e emissions
 with st.expander('**2.2 Anpassung der Platzausnutzung und CO2eq-Emissionen**'):
-    st.info("**Hinweis:** Passen Sie die durchschnittliche Platzausnutzung Ihres Bussystems an, um den neuen CO2e-Wert zu berechnen. Dieser angepasste CO2e-Wert wird anschließend mit dem CO2e-Ausstoß des Ridepooling-Systems verglichen.")
+    st.info("**Hinweis:** Passen Sie die durchschnittliche Platzausnutzung Ihres Bussystems an, um den neuen CO2eq-Wert zu berechnen. Dieser angepasste CO2eq-Wert wird anschließend mit dem CO2eq-Ausstoß des Ridepooling-Systems verglichen.")
     adjusted_occupancy = st.slider("Angepasste durchschnittliche Platzausnutzung (%)", min_value=0.1, max_value=100.0, value=initial_occupancy, step=0.1)
     st.caption("Passen Sie die durchschnittliche Platzausnutzung an, um den neuen CO2eq-Wert zu berechnen.")
 
-    # Berechnung des neuen CO2e-Wertes basierend auf der angepassten Platzausnutzung
+    # Berechnung des neuen CO2eq-Wertes basierend auf der angepassten Platzausnutzung
     new_CO2eq_wtw = calculate_new_CO2eq_wtw(initial_CO2eq_wtw, initial_occupancy, adjusted_occupancy)
 
     # Erstelle zwei Spalten für die Anzeige
