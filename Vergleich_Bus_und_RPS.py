@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 # Setze das Thema auf 'light'
-st.set_page_config(page_title="Vergleich der Ökobilanzierung von Bus und Ridepooling-System", layout="centered", initial_sidebar_state="auto")
+st.set_page_config(page_title="Entwurf: Vergleich der Ökobilanzierung von Bus und Ridepooling-System", layout="centered", initial_sidebar_state="auto")
 
 # Funktion zur Anzeige der Sidebar
 def show_sidebar():
@@ -27,9 +27,6 @@ def show_sidebar():
     """, unsafe_allow_html=True)
 
 ################################################################ Berechnung RPS ################################################################
-
-
-
 # Funktion zur Initialisierung der Session State Variablen
 def initialize_session_state():
     if 'vehicle_list' not in st.session_state:
@@ -311,7 +308,6 @@ def show_vehicle_fleet_performance():
             except ValueError:
                 st.error("Bitte geben Sie gültige Zahlenwerte ein.")
             
-
 def show_emissions_data():
     with st.expander("**4. Emissionsdaten**"):
         st.info("**Hinweis:** Bitte geben Sie die CO2-Emissionsdaten für Benzin, Diesel und Strom an. Sie können vorausgewählte Optionen wählen oder eigene Angaben tätigen. Optional können Sie auch den Anteil an selbst erzeugtem Strom aus Photovoltaikanlagen angeben, um den adjustierten CO2-Emissionsfaktor für Strom zu berechnen. Bitte berücksichtigen Sie die Betrachtungsweise/Analyseprinzip. Dieses Programm nutzt die Well-to-Wheel-Betrachtung (WTW).")
@@ -481,9 +477,10 @@ initialize_session_state()
 show_sidebar()
 
 # Grundlegende Konfiguration
-st.title('Vergleich der Ökobilanzierung von Bus und Ridepooling-System')
+st.title('Vergleich der Ökobilanzierung von Bus und Ridepooling-System - Entwurfsfassung')
 
 st.subheader("Berechnung der Umweltwirkung des Ridepooling-Systems")
+
 # Zeige Allgemeine Informationen an
 show_general_info()
 
@@ -498,8 +495,6 @@ show_emissions_data()
 
 # Zeige Berechnung Umweltwirkung Ridepooling-System an
 show_environmental_impact_calculation()
-
-
 
 ################################################################ Berechnung Bus ################################################################
 # Constants
@@ -631,5 +626,13 @@ def compare_emissions():
     
 compare_emissions()
 
+# Footer
+st.markdown("---")
+st.write("***Entwurfsfassung***")
+st.write("© 2024 [FH Münster](https://www.fh-muenster.de.de/)")
+st.write("Dieses Programm wurde im Rahmen des Projekts (https://www.loopmuenster.de/) entwickelt.")
+st.write("Die Berechnungen basieren auf den Annahmen und Daten, die Sie in den verschiedenen Abschnitten des Programms eingegeben haben.")
+st.write("Die Ergebnisse dienen nur zu Informationszwecken und sind nicht verbindlich.")
+st.write("Für Fragen oder Anregungen wenden Sie sich bitte an [peter.bruder@fh-muenster.de](mailto:peter.bruder@fh-muenster.de).")
 
 
