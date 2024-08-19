@@ -7,8 +7,6 @@ import toml
 
 # Setze das Thema aus der config.toml Datei
 
-config = toml.load(".streamlit/config.toml")
-
 st.set_page_config(page_title="Vergleich der CO2eq-Emissionen von Bus- und Ridepooling-System", layout="centered", initial_sidebar_state="auto")
 
 # Funktion zur Anzeige der Sidebar
