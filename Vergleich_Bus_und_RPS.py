@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 # Setze das Thema auf 'light'
-st.set_page_config(page_title="Entwurf: Vergleich der Ökobilanzierung von Bus und Ridepooling-System", layout="centered", initial_sidebar_state="auto")
+st.set_page_config(page_title="Entwurfsvorlage: Vergleich der Ökobilanzierung von Bus und Ridepooling-System", layout="centered", initial_sidebar_state="auto")
 
 # Funktion zur Anzeige der Sidebar
 def show_sidebar():
