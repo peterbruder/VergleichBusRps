@@ -3,9 +3,13 @@ from datetime import date
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
+import toml
 
-# Setze das Thema auf 'light'
-st.set_page_config(page_title="Entwurfsvorlage: Vergleich der Ökobilanzierung von Bus und Ridepooling-System", layout="centered", initial_sidebar_state="auto")
+# Setze das Thema aus der config.toml Datei
+
+config = toml.load("config.toml")
+
+st.set_page_config(page_title="Vergleich der CO2eq-Emissionen von Bus- und Ridepooling-System", layout="centered", initial_sidebar_state="auto")
 
 # Funktion zur Anzeige der Sidebar
 def show_sidebar():
@@ -27,6 +31,29 @@ def show_sidebar():
     """, unsafe_allow_html=True)
 
 ################################################################ Berechnung RPS ################################################################
+
+
+def show_methodik():
+    with st.expander("**Methodik**"):
+        st.write("Das Programm dient zur Bewertung der Umweltwirkung von Ridepooling-Systemen im Vergleich zu konventionellen Bussystemen. Ziel ist es, die CO2eq-Emissionen pro Personenkilometer (g CO2eq/Pkm) zu berechnen und diese gegenüberzustellen.")
+        
+        st.write("**Methodische Vorgehensweise:**")
+
+        st.write("""
+        - **Datenerhebung und Eingabe:** Der Benutzer gibt grundlegende Informationen zum Ridepooling-System, wie Betriebsdaten (Anzahl der Fahrten, transportierte Fahrgäste) und Fahrzeugflottendaten (Verbrauchsdaten, gefahrene Kilometer) ein.
+
+        - **Berechnung der Umweltwirkungen:** Basierend auf den Eingabedaten werden die Gesamtemissionen (Benzin, Diesel, Strom) des Ridepooling-Systems berechnet. Die Emissionen pro Personenkilometer werden ermittelt.
+
+        - **Vergleich mit Bussystem:** Das Programm berechnet die durchschnittliche Platzausnutzung eines Busses und den entsprechenden CO2eq-Ausstoß pro Personenkilometer, angepasst an unterschiedliche Auslastungen. Diese Werte werden mit denen des Ridepooling-Systems verglichen.
+
+        - **Visualisierung:** Die Ergebnisse werden grafisch dargestellt, um die CO2eq-Emissionen pro Personenkilometer für beide Systeme direkt zu vergleichen.
+                 
+        **Sonstige Anmerkungen:**
+        - Die Berechnung beruht lediglich auf monomdalen Fahrten.
+        - Die Umweltwirkung wird anhand der CO2eq-Emissionen bewertet. Andere Umweltkategoierien (z.B. Luftschadstoffe, Lärm) werden zur Zeit nicht berücksichtigt.
+        """)
+
+
 # Funktion zur Initialisierung der Session State Variablen
 def initialize_session_state():
     if 'vehicle_list' not in st.session_state:
@@ -46,7 +73,7 @@ def validate_input_int(text):
 # Funktion zur Darstellung der Allgemeinen Informationen
 # Funktion zur Darstellung der Allgemeinen Informationen
 def show_general_info():
-    with st.expander("**1. Allgemeine Informationen**"):
+    with st.expander("**1.1 Allgemeine Informationen**"):
         st.info("**Hinweis:** Bitte geben Sie zunächst allgemeine Informationen zum Ridepooling-System an. Bitte berücksichtigen Sie den Betrachtungszeitraum, auf welchen sich die folgenden Angaben beziehen.")
         name_ridepooling_system = st.text_input("Name des Ridepooling-Systems:")
         start_date = st.date_input("Beginn Betrachtungszeitraum:", date(2022, 1, 1))
@@ -74,7 +101,7 @@ def show_general_info():
 
 # Funktion zur Darstellung der Systemleistungs-Sektion
 def show_system_performance():
-    with st.expander("**2. Beförderungsleistung**"):
+    with st.expander("**1.2 Beförderungsleistung**"):
         st.info("**Hinweis:** Bitte geben Sie die Beförderungsleistung des Ridepooling-Systems an. Hierzu zählen die Anzahl der abgeschlossenen Buchungen und die Anzahl der transportierten Fahrgäste im Betrachtungszeitraum. Optional können Sie auch ein Ridepooling-System auswählen, um vorausgefüllte Daten zu erhalten.")
         
         # Daten für das Dropdown-Menü
@@ -90,8 +117,8 @@ def show_system_performance():
         selected_system = st.selectbox('Wählen Sie ein Ridepooling-System (Optional):', list(ridepooling_data.keys()))
 
         # Eingabefelder mit vorausgefüllten Daten basierend auf der Auswahl
-        abgeschlossene_buchungen = st.number_input("Abgeschlossene Buchungen im Betrachtungszeitraum:", value=ridepooling_data[selected_system]["Fahrten"], min_value=0)
-        transportierte_fahrgaeste = st.number_input("Transportierte Fahrgäste im Betrachtungszeitraum:", value=ridepooling_data[selected_system]["Transportierte Fahrgäste"], min_value=0)
+        abgeschlossene_buchungen = st.number_input("Abgeschlossene Buchungen im Betrachtungszeitraum:", value=ridepooling_data[selected_system]["Fahrten"], min_value=0, step=0)
+        transportierte_fahrgaeste = st.number_input("Transportierte Fahrgäste im Betrachtungszeitraum:", value=ridepooling_data[selected_system]["Transportierte Fahrgäste"], min_value=0, step=0)
 
         # Speichern der globalen Variablen
         st.session_state.update({
@@ -101,13 +128,13 @@ def show_system_performance():
 
 # Funktion zur Darstellung der Fahrzeugflotten- und Fahrtleistungs-Sektion
 def show_vehicle_fleet_performance():
-    with st.expander("**3. Fahrzeugflotte & Fahrtleistung**"):
+    with st.expander("**1.3 Fahrzeugflotte & Fahrtleistung**"):
         # Vordefinierte Fahrzeugtypen und deren Verbrauchsdaten
         vehicle_types = {
             "LEVC TX (Volvo XC 90 Recharge T8 AWD)": {"Benzinverbrauch (l/100km)": 1.2, "Dieselverbrauch (l/100km)": 0.0, "Stromverbrauch (kWh/100km)": 20.5, "Kilometer leer": 0, "Kilometer besetzt": 0},
             "Mercedes Vito lang 114 CDI": {"Benzinverbrauch (l/100km)": 0.0, "Dieselverbrauch (l/100km)": 8.4, "Stromverbrauch (kWh/100km)": 0.0, "Kilometer leer": 0, "Kilometer besetzt": 0},
             "Mercedes eVito Tourer PRO lang (90 kWh)": {"Benzinverbrauch (l/100km)": 0.0, "Dieselverbrauch (l/100km)": 0.0, "Stromverbrauch (kWh/100km)": 29.8, "Kilometer leer": 0, "Kilometer besetzt": 0},
-            "Eigene Angaben": {"Benzinverbrauch (l/100km)": 0.0, "Dieselverbrauch (l/100km)": 0.0, "Stromverbrauch (kWh/100km)": 0.0, "Kilometer leer": 0, "Kilometer besetzt": 0}
+            "Anderer Fahrzeugtyp": {"Benzinverbrauch (l/100km)": 0.0, "Dieselverbrauch (l/100km)": 0.0, "Stromverbrauch (kWh/100km)": 0.0, "Kilometer leer": 0, "Kilometer besetzt": 0}
         }
 
         # Initialisierung der Fahrzeugliste im Session State, falls noch nicht vorhanden
@@ -116,10 +143,10 @@ def show_vehicle_fleet_performance():
 
         # Fahrzeugdaten durch Nutzereingaben modifizieren
         with st.container():
-            st.info("**Hinweis:** Bitte geben Sie an, welche Fahrzeugtypen in Ihrer Flotte vorhanden sind. Bitte geben Sie für jeden Fahrzeugtyp die gefahrenen Kilometerleistungen (leer, besetzt) flottenbezogen an. Bitte beziehen Sie sich auf den Betrachtungszeitraum. Die vorgegebenen Verbrauchsdaten beziehen sich auf die WLTP-Methode (Deutsche Automobil Treuhand GmbH, Leitfaden CO2 (2022)). Passen Sie ggf. Verbrauchsdaten an. Klicken Sie anschließend auf 'Daten übernehmen & berechnen'. Sie können andere Fahrzeugtypen abbilden, indem Sie ein leeres Feld auswählen und die entsprechenden Kilometer- & Verbrauchsdaten eingeben.")
+            st.info("**Hinweis:** Bitte geben Sie an, welche Fahrzeugtypen in Ihrer Flotte vorhanden sind. Bitte geben Sie für jeden Fahrzeugtyp die gefahrenen Kilometerleistungen (leer, besetzt) flottenbezogen an. Bitte beziehen Sie sich auf den Betrachtungszeitraum. Die vorgegebenen Verbrauchsdaten beziehen sich auf die WLTP-Methode (Deutsche Automobil Treuhand GmbH, Leitfaden CO2eq (2022)). Passen Sie ggf. Verbrauchsdaten an. Klicken Sie anschließend auf 'Daten übernehmen & berechnen'. Sie können andere Fahrzeugtypen abbilden, indem Sie ein leeres Feld auswählen und die entsprechenden Kilometer- & Verbrauchsdaten eingeben.")
 
         with st.form("vehicle_form", clear_on_submit=True):
-            new_vehicle_type = st.selectbox("Wählen Sie einen Fahrzeugtyp", [""] + list(vehicle_types.keys()))
+            new_vehicle_type = st.selectbox("Wählen Sie einen Fahrzeugtyp", list(vehicle_types.keys()))
             add_vehicle = st.form_submit_button("Fahrzeug hinzufügen")
         if add_vehicle:
             data = vehicle_types[new_vehicle_type].copy() if new_vehicle_type in vehicle_types else {"Benzinverbrauch (l/100km)": 0.0, "Dieselverbrauch (l/100km)": 0.0, "Stromverbrauch (kWh/100km)": 0.0, "Kilometer leer": 0, "Kilometer besetzt": 0}
@@ -308,63 +335,64 @@ def show_vehicle_fleet_performance():
             except ValueError:
                 st.error("Bitte geben Sie gültige Zahlenwerte ein.")
             
-def show_emissions_data():
-    with st.expander("**4. Emissionsdaten**"):
-        st.info("**Hinweis:** Bitte geben Sie die CO2-Emissionsdaten für Benzin, Diesel und Strom an. Sie können vorausgewählte Optionen wählen oder eigene Angaben tätigen. Optional können Sie auch den Anteil an selbst erzeugtem Strom aus Photovoltaikanlagen angeben, um den adjustierten CO2-Emissionsfaktor für Strom zu berechnen. Bitte berücksichtigen Sie die Betrachtungsweise/Analyseprinzip. Dieses Programm nutzt die Well-to-Wheel-Betrachtung (WTW).")
 
-        # CO2-Emissionsdaten (Benzin)
-        benzin_emissionsdaten_auswahl = st.selectbox("CO2e-Emissionsdaten (Benzin):", 
-                                                      ["Helmholtz-Gemeinschaft Deutscher Forschungszentren [CO2e]", "CO2online [CO2]", "Eigene Angaben"])
-        if benzin_emissionsdaten_auswahl == "Helmholtz-Gemeinschaft Deutscher Forschungszentren [CO2e]":
+def show_emissions_data():
+    with st.expander("**1.4 Emissionsdaten**"):
+        st.info("**Hinweis:** Bitte geben Sie die CO2eq-Emissionsdaten für Benzin, Diesel und Strom an. Sie können vorausgewählte Optionen wählen oder eigene Angaben tätigen. Optional können Sie auch den Anteil an selbst erzeugtem Strom aus Photovoltaikanlagen angeben, um den adjustierten CO2eq-Emissionsfaktor für Strom zu berechnen. Bitte berücksichtigen Sie die Betrachtungsweise/Analyseprinzip. Dieses Programm nutzt die Well-to-Wheel-Betrachtung (WTW).")
+
+        # CO2eq-Emissionsdaten (Benzin)
+        benzin_emissionsdaten_auswahl = st.selectbox("CO2eq-Emissionsdaten (Benzin):", 
+                                                      ["Helmholtz-Gemeinschaft Deutscher Forschungszentren [CO2eq]", "CO2eqonline [CO2eq]", "Eigene Angaben"])
+        if benzin_emissionsdaten_auswahl == "Helmholtz-Gemeinschaft Deutscher Forschungszentren [CO2eq]":
             benzin_emissionsdaten = 3030  # g/l
-        elif benzin_emissionsdaten_auswahl == "CO2online [CO2]":
+        elif benzin_emissionsdaten_auswahl == "CO2online [CO2eq]":
             benzin_emissionsdaten = 2370  # g/l
         else:  # Eigene Angaben
-            benzin_emissionsdaten = st.number_input("Geben Sie die CO2-Emissionsdaten (Benzin) [g/l] ein:", min_value=0.0, format='%f', step=1)
+            benzin_emissionsdaten = st.number_input("Geben Sie die CO2eq-Emissionsdaten (Benzin) [g/l] ein:", min_value=0.0, format='%f', step=1)
 
-        # CO2-Emissionsdaten (Diesel)
-        diesel_emissionsdaten_auswahl = st.selectbox("CO2e-Emissionsdaten (Diesel):", 
-                                                      ["Helmholtz-Gemeinschaft Deutscher Forschungszentren [CO2e]", "CO2online [CO2]", "Eigene Angaben"])
-        if diesel_emissionsdaten_auswahl == "Helmholtz-Gemeinschaft Deutscher Forschungszentren [CO2e]":
+        # CO2eq-Emissionsdaten (Diesel)
+        diesel_emissionsdaten_auswahl = st.selectbox("CO2eq-Emissionsdaten (Diesel):", 
+                                                      ["Helmholtz-Gemeinschaft Deutscher Forschungszentren [CO2eq]", "CO2eqonline [CO2eq]", "Eigene Angaben"])
+        if diesel_emissionsdaten_auswahl == "Helmholtz-Gemeinschaft Deutscher Forschungszentren [CO2eq]":
             diesel_emissionsdaten = 3410  # g/l
-        elif diesel_emissionsdaten_auswahl == "CO2online [CO2]":
+        elif diesel_emissionsdaten_auswahl == "CO2eqonline [CO2eq]":
             diesel_emissionsdaten = 2650  # g/l
         else:  # Eigene Angaben
-            diesel_emissionsdaten = st.number_input("Geben Sie die CO2-Emissionsdaten (Diesel) [g/l] ein:", min_value=0.0, format='%f',step=1)
+            diesel_emissionsdaten = st.number_input("Geben Sie die CO2eq-Emissionsdaten (Diesel) [g/l] ein:", min_value=0.0, format='%f',step=1)
 
-        # CO2-Emissionsdaten (Strom)
-        strom_emissionsdaten_auswahl = st.selectbox("CO2e-Emissionsdaten (Strom):", 
-                                                     ["Umweltbundesamt: CO2-Äquivalente mit Vorketten (2022) [CO2e]", 
-                                                      "Umweltbundesamt: CO2-Emissionsfaktor Strommix (2022)", 
+        # CO2eq-Emissionsdaten (Strom)
+        strom_emissionsdaten_auswahl = st.selectbox("CO2eq-Emissionsdaten (Strom):", 
+                                                     ["Umweltbundesamt: CO2eq-Äquivalente mit Vorketten (2022) [CO2eq]", 
+                                                      "Umweltbundesamt: CO2eq-Emissionsfaktor Strommix (2022)", 
                                                       "Eigene Angaben"])
-        if strom_emissionsdaten_auswahl == "Umweltbundesamt: CO2-Äquivalente mit Vorketten (2022) [CO2e]":
+        if strom_emissionsdaten_auswahl == "Umweltbundesamt: CO2eq-Äquivalente mit Vorketten (2022) [CO2eq]":
             strom_emissionsdaten = 498  # g/kWh
-        elif strom_emissionsdaten_auswahl == "Umweltbundesamt: CO2-Emissionsfaktor Strommix (2022)":
+        elif strom_emissionsdaten_auswahl == "Umweltbundesamt: CO2eq-Emissionsfaktor Strommix (2022)":
             strom_emissionsdaten = 434  # g/kWh
         else:  # Eigene Angaben
-            strom_emissionsdaten = st.number_input("Geben Sie die CO2-Emissionsdaten (Strom) [g/kWh] ein:", min_value=0.0, format='%f', step=1)
+            strom_emissionsdaten = st.number_input("Geben Sie die CO2eq-Emissionsdaten (Strom) [g/kWh] ein:", min_value=0.0, format='%f', step=1)
 
         # Anteil an selbst erzeugtem Strom aus Photovoltaikanlagen
         oekostrom_anteil = st.slider("Anteil des selbst erzeugten Stroms aus Photovoltaikanlagen [%]:", min_value=0, max_value=100, value=0, step=1)
-        pv_emissionsdaten = st.number_input("Geben Sie die CO2-Emissionsdaten für selbst erzeugten Strom aus Photovoltaikanlagen [g/kWh] ein:", value=35.0, min_value=0.0, format='%.1f', step=0.1)
+        pv_emissionsdaten = st.number_input("Geben Sie die CO2eq-Emissionsdaten für selbst erzeugten Strom aus Photovoltaikanlagen [g/kWh] ein:", value=35.0, min_value=0.0, format='%.1f', step=0.1)
 
-        # Berechnung des adjustierten CO2-Emissionsfaktors für Strom
+        # Berechnung des adjustierten CO2eq-Emissionsfaktors für Strom
         strom_emissionsdaten = round(strom_emissionsdaten * (1 - oekostrom_anteil / 100.0) + pv_emissionsdaten * (oekostrom_anteil / 100.0), 1)
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.write(f"**CO2-Emissionsdaten (Benzin) ausgewählt:**")
+            st.write(f"**CO2eq-Emissionsdaten (Benzin) ausgewählt:**")
         with col2:
             st.write(f"**{benzin_emissionsdaten} g/l**")
 
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.write(f"**CO2-Emissionsdaten (Diesel) ausgewählt:**")
+            st.write(f"**CO2eq-Emissionsdaten (Diesel) ausgewählt:**")
         with col2:
             st.write(f"**{diesel_emissionsdaten} g/l**")
         
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.write(f"**Adjustierter CO2-Emissionsdaten (Strom) basierend auf {oekostrom_anteil}% selbst erzeugtem Strom aus Photovoltaikanlagen:**")
+            st.write(f"**Adjustierter CO2eq-Emissionsdaten (Strom) basierend auf {oekostrom_anteil}% selbst erzeugtem Strom aus Photovoltaikanlagen:**")
         with col2:
             st.write(f"**{strom_emissionsdaten} g/kWh**")
 
@@ -380,8 +408,8 @@ def show_emissions_data():
         })
 
 def show_environmental_impact_calculation():
-    with st.expander("**5. Berechnung Umweltwirkung Ridepooling-System**"):
-        st.info("**Hinweis:** Im Folgenden ist die Umweltwirkung des Ridepooling-Systems dargestellt. In der Abbildung wird der spezifische CO2-Ausstoß des Ridepooling-Systems denen anderer Verkehrsmittel* gegenübergestellt. Die Daten der anderen Verkehrsmittel stammen vom Umweltbundesamt, Umweltfreundlich mobil! (2022).")
+    with st.expander("**1.5 Berechnung Umweltwirkung Ridepooling-System**"):
+        st.info("**Hinweis:** Im Folgenden ist die Umweltwirkung des Ridepooling-Systems dargestellt. In der Abbildung wird der spezifische CO2-Ausstoß des Ridepooling-Systems denen anderer Verkehrsmittel gegenübergestellt. Die Daten der anderen Verkehrsmittel stammen vom Umweltbundesamt, Umweltfreundlich mobil! (2022).")
 
         # Stellen Sie sicher, dass alle erforderlichen Werte vorhanden sind, bevor Sie fortfahren
         required_keys = ['fahrzeugkilometer_gesamt', 'personenkilometer_gefahren', 'benzin_emissionsdaten', 'diesel_emissionsdaten', 'strom_emissionsdaten', 'oekostrom_anteil']
@@ -401,9 +429,9 @@ def show_environmental_impact_calculation():
             strom_emissionsdaten = st.session_state['strom_emissionsdaten']
             oekostrom_anteil = st.session_state['oekostrom_anteil']
 
-            benzin_emissionen = (benzinverbrauch_gesamt * benzin_emissionsdaten) / 1000  # kg CO2
-            diesel_emissionen = (dieselverbrauch_gesamt * diesel_emissionsdaten) / 1000  # kg CO2
-            strom_emissionen = (stromverbrauch_gesamt * strom_emissionsdaten) / 1000  # kg CO2
+            benzin_emissionen = (benzinverbrauch_gesamt * benzin_emissionsdaten) / 1000  # kg CO2e
+            diesel_emissionen = (dieselverbrauch_gesamt * diesel_emissionsdaten) / 1000  # kg CO2e
+            strom_emissionen = (stromverbrauch_gesamt * strom_emissionsdaten) / 1000  # kg CO2e
             strom_emissionen *= (1 - oekostrom_anteil / 100)  # Anpassung für Ökostrom
 
             # Speichern als globale Variablen
@@ -413,21 +441,21 @@ def show_environmental_impact_calculation():
                 'strom_emissionen': strom_emissionen
             })
 
-            co2_emissionen_gesamt_rps = round(benzin_emissionen + diesel_emissionen + strom_emissionen, 4)
-            co2_emissionen_pro_personenkilometer_rps = round(co2_emissionen_gesamt_rps / personenkilometer_gefahren, 4) if personenkilometer_gefahren else 0
+            CO2e_emissionen_gesamt_rps = round(benzin_emissionen + diesel_emissionen + strom_emissionen, 4)
+            CO2e_emissionen_pro_personenkilometer_rps = round(CO2e_emissionen_gesamt_rps / personenkilometer_gefahren, 4) if personenkilometer_gefahren else 0
 
-            # Umrechnung in g CO2e pro Pkm
-            co2_emissionen_pro_personenkilometer_rps_g = co2_emissionen_pro_personenkilometer_rps * 1000  # Umrechnung in g CO2e/Pkm
+            # Umrechnung in g CO2ee pro Pkm
+            CO2e_emissionen_pro_personenkilometer_rps_g = CO2e_emissionen_pro_personenkilometer_rps * 1000  # Umrechnung in g CO2ee/Pkm
 
             # Speichern der berechneten Werte im Sitzungszustand
             st.session_state.update({
-                'co2_emissionen_gesamt_rps': co2_emissionen_gesamt_rps,
-                'co2_emissionen_pro_personenkilometer_rps_g': co2_emissionen_pro_personenkilometer_rps_g
+                'CO2e_emissionen_gesamt_rps': CO2e_emissionen_gesamt_rps,
+                'CO2e_emissionen_pro_personenkilometer_rps_g': CO2e_emissionen_pro_personenkilometer_rps_g
             })
 
             # Emissionen pro pkm für verschiedene Verkehrsträger
             emissionen_data = {
-                st.session_state['name_ridepooling_system']: co2_emissionen_pro_personenkilometer_rps_g,
+                st.session_state['name_ridepooling_system']: CO2e_emissionen_pro_personenkilometer_rps_g,
                 'MIV (Fahrer)': 152.86,
                 'Bus': 80.54,
                 'Straßenbahn/U-Bahn': 59.30,
@@ -453,22 +481,22 @@ def show_environmental_impact_calculation():
                 ),
                 width=650,
                 height=650,
-                yaxis_title='Emissionen [g CO2/pkm]',
+                yaxis_title='Emissionen [g CO2e/pkm]',
                 xaxis_tickangle=-45
             )
             st.plotly_chart(fig1)
 
             col1, col2 = st.columns([3, 1])
             with col1:
-                st.write(f"**Gesamte CO2-Emissionen des Ridepooling-Systems:**")
+                st.write(f"**Gesamte CO2e-Emissionen des Ridepooling-Systems:**")
             with col2:
-                st.write(f"**{co2_emissionen_gesamt_rps:.2f} kg CO2**")
+                st.write(f"**{CO2e_emissionen_gesamt_rps:.2f} kg CO2e**")
 
             col1, col2 = st.columns([3, 1])
             with col1:
-                st.write(f"**CO2-Emissionen pro Personenkilometer:**")
+                st.write(f"**CO2e-Emissionen pro Personenkilometer:**")
             with col2:
-                st.write(f"**{co2_emissionen_pro_personenkilometer_rps_g:.2f} g CO2/pkm**")
+                st.write(f"**{CO2e_emissionen_pro_personenkilometer_rps_g:.2f} g CO2e/pkm**")
 
 # Initialisiere Session State Variablen
 initialize_session_state()
@@ -477,10 +505,11 @@ initialize_session_state()
 show_sidebar()
 
 # Grundlegende Konfiguration
-st.title('Vergleich der Ökobilanzierung von Bus und Ridepooling-System - Entwurfsfassung')
+st.title('Entwurf: Vergleich der CO2e-Emissionen von Bus- und Ridepooling-System')
 
-st.subheader("Berechnung der Umweltwirkung des Ridepooling-Systems")
+show_methodik()
 
+st.subheader("1. Berechnung der CO2e-Emissionen des Ridepooling-Systems")
 # Zeige Allgemeine Informationen an
 show_general_info()
 
@@ -496,143 +525,154 @@ show_emissions_data()
 # Zeige Berechnung Umweltwirkung Ridepooling-System an
 show_environmental_impact_calculation()
 
+
+
 ################################################################ Berechnung Bus ################################################################
 # Constants
-initial_co2_wtw = 80.54  # g CO2eg/Pkm (Well-to-Wheel)
+initial_CO2e_wtw = 80.54  # g CO2eeg/Pkm (Well-to-Wheel)
+initial_occupancy = 18.7  # % (VDV Statistik 2022)
 
 # Function to calculate Platzausnutzung
 def calculate_platzausnutzung(personen_km, platz_km):
     return (personen_km / platz_km) * 100
 
-# Function to calculate new CO2 emissions based on adjusted Platzausnutzung
-def calculate_new_co2_wtw(initial_co2, initial_occupancy, adjusted_occupancy):
-    return initial_co2 * (initial_occupancy / adjusted_occupancy)
+# Function to calculate new CO2e emissions based on adjusted Platzausnutzung
+def calculate_new_CO2eq_wtw(initial_CO2eq, initial_occupancy, adjusted_occupancy):
+    return initial_CO2eq * (initial_occupancy / adjusted_occupancy)
 
 # Part 1: Calculate Platzausnutzung
-st.title('Berechnung der Platzausnutzung und CO2-Emissionen')
+st.subheader('2. Berechnung CO2e-Emissionen Bus')
+with st.expander('**2.1 Berechnung der durchschnittlichen Platzausnutzung des Bus-Systems**'):
+    st.info("**Hinweis:** Die vorausgefüllten Daten beziehen sich auf die durchschnittliche Platzausnutzung im deutschen Durchschnitt (VDV Statistik 2022). Sie können die durchschnittliche Platzausnutzung spezifisch für Ihr Bussystem berechnen. Sie können den errechneten Wert im Folgenden Schritt einsetzen, um einen Vergleich der CO2e-Emissionen zu erhalten.")
+    # Eingabefelder für Personen- und Platzkilometer
+    personen_km = st.number_input("Personenkilometer [Mio.]", min_value=0.0, value=24311.0, step=0.1, format="%.1f")
+    st.caption("Produkt aus beförderten Personen und der zurückgelegten Entfernung in Kilometern.")
 
-st.header('Teil 1: Berechnung der durchschnittlichen Platzausnutzung')
+    Nutzwagen_km = st.number_input("Nutzwagenkilometer [Mio.]", min_value=0.0, value=1658.0, step=0.1, format="%.1f")
+    st.caption("Platzkilometer: Produkt aus Nutzwagenkilometer und Platzzahl (Sitz- und Stehplätze) jeweils der einzelnen Fahrzeuge (Berechnung nach VDV-Richtlinien von 1990).")
 
-# Eingabefelder für Personen- und Platzkilometer
-personen_km = st.number_input("Personenkilometer [Mio.]", min_value=0.0, value=24311.0, step=0.1, format="%.1f")
-st.caption("Produkt aus beförderten Personen und der zurückgelegten Entfernung in Kilometern.")
+    Platzzahl= st.number_input("Platzzahl (Sitz- und Stehplätze) der einzelnen Fahrzeuge", min_value=0.0, value=78.5186, step=0.1, format="%.2f")
+    st.caption("Anzahl der durchschnittlichen Sitz- und Stehplätze der einzelnen Fahrzeuge.")
 
-platz_km = st.number_input("Platzkilometer [Mio.]", min_value=0.0, value=130184.0, step=0.1, format="%.1f")
-st.caption("Produkt aus Nutzwagenkilometer und Platzzahl (Sitz- und Stehplätze) jeweils der einzelnen Fahrzeuge.")
-
-# Berechnung der Platzausnutzung
-initial_occupancy = calculate_platzausnutzung(personen_km, platz_km)
-col1, col2 = st.columns([3, 1])
-# Anzeige der berechneten durchschnittlichen Platzausnutzung
-with col1:
-    st.write("**Berechnete durchschnittliche Platzausnutzung:**")
-with col2:
-    st.write(f"{initial_occupancy:.2f}%")
-
-# Berechnung der Personen-km basierend auf den gegebenen Daten
-calculated_personen_km = platz_km * (initial_occupancy / 100)
-col1, col2 = st.columns([3, 1])
-# Anzeige der berechneten Personenkilometer
-with col1:
-    st.write("**Berechnete Personenkilometer [Mio.]:**")
-with col2:
-    st.write(f"{calculated_personen_km:.2f}")
-    
-# Erklärung der Berechnungen
-st.info("""
-**Berechnungen:**
-- **Personenkilometer**: Das Produkt aus beförderten Personen und der zurückgelegten Entfernung in Kilometern.
-- **Platzkilometer**: Das Produkt aus Nutzwagenkilometern und der Platzzahl (Sitz- und Stehplätze) der einzelnen Fahrzeuge.
-- **Durchschnittliche Platzausnutzung**: Wird berechnet als (Personenkilometer / Platzkilometer) * 100.
-- **CO2-Ausstoß (WTW)**: Basierend auf der durchschnittlichen Platzausnutzung in Deutschland (18.7 %, VDV Statistik 2022), wird der CO2äq-Wert (80.54 g CO2e/Pkm, Umweltfreundlich mobil! Umweltbundesamt, 2021) auf Basis der WTW-Betrachtungangepasst.
-""")
-
-# Part 2: Adjust Platzausnutzung and calculate CO2 emissions
-st.header('Teil 2: Anpassung der Platzausnutzung und CO2-Emissionen')
-
-adjusted_occupancy = st.slider("Angepasste durchschnittliche Platzausnutzung (%)", min_value=0.0, max_value=100.0, value=initial_occupancy, step=0.1)
-st.caption("Passen Sie die durchschnittliche Platzausnutzung an, um den neuen CO2-Wert zu berechnen.")
-
-# Berechnung des neuen CO2-Wertes basierend auf der angepassten Platzausnutzung
-new_co2_wtw = calculate_new_co2_wtw(initial_co2_wtw, initial_occupancy, adjusted_occupancy)
-
-# Erstelle zwei Spalten für die Anzeige
-col1, col2 = st.columns([3, 1])
-
-# Anzeige des angepassten CO2-Ausstoßes
-with col1:
-    st.write(f"**Angepasster CO2-Ausstoß (WTW) bei {adjusted_occupancy:.2f}% Auslastung:**")
-with col2:
-    st.write(f"{new_co2_wtw:.2f} g CO2e/Pkm")
-
-
-################################################################ Vergleich ################################################################
-def compare_emissions():
-    if 'co2_emissionen_pro_personenkilometer_rps_g' not in st.session_state:
-        st.error("CO2-Emissionen des Ridepooling-Systems sind nicht verfügbar. Berechne zuerst die Umweltwirkung des Ridepooling-Systems.")
-        return
-
-    st.title('Vergleich der CO2-Emissionen')
-
-    # Erstellung des Diagramms
-    fig2 = go.Figure()
-    fig2.add_trace(go.Bar(name='Bus', x=['Bus'], y=[new_co2_wtw], marker_line_color='rgb(0,0,0)', marker_line_width=1.5, opacity=0.7))
-    fig2.add_trace(go.Bar(name='Ridepooling-System', x=['Ridepooling-System'], y=[st.session_state['co2_emissionen_pro_personenkilometer_rps_g']], marker_line_color='rgb(0,0,0)', marker_line_width=1.5, opacity=0.7))
-    fig2.update_layout(
-        barmode='group',
-        title='Vergleich der CO2-Emissionen pro Personenkilometer',
-        legend=dict(
-            orientation="v",  # vertikale Anordnung
-            y=0.6,  # Positionierung der Legende
-            x=1.02,  # Legende rechts vom Diagramm
-            xanchor='left',
-            yanchor='top'
-        ),
-        width=650,
-        height=650,
-        yaxis_title='Emissionen [g CO2/pkm]',
-        xaxis_tickangle=-45
-    )
-    st.plotly_chart(fig2)
-        # Erstelle zwei Spalten für jede Zeile
-    col1, col2 = st.columns([3, 1])  # Verhältnis 3:1 sorgt dafür, dass die linke Spalte breiter ist
-    
-    # Erste Zeile
-    with col1:
-        st.write("**CO2-Emissionen Bus (angepasst):**")
-    with col2:
-        st.write(f"{new_co2_wtw:.2f} g CO2e/Pkm")
-    
-    # Zweite Zeile
+    # Berechnung der Platzkilometer
+    platz_km = Nutzwagen_km * Platzzahl
     col1, col2 = st.columns([3, 1])
+    # Anzeige der berechneten Platzkilometer
     with col1:
-        st.write("**Auslastung Bus (angepasst):**")
+        st.write("**Berechnete Platzkilometer [Mio.]:**")
     with col2:
-        st.write(f"{adjusted_occupancy:.2f}%")
-    
-    # Dritte Zeile
+        st.write(f"{platz_km:.2f}")
+
+    st.caption("Produkt aus Nutzwagenkilometer und Platzzahl (Sitz- und Stehplätze) jeweils der einzelnen Fahrzeuge.")
+
+    # Berechnung der Platzausnutzung
+    calculated_occupancy = calculate_platzausnutzung(personen_km, platz_km)
     col1, col2 = st.columns([3, 1])
+    # Anzeige der berechneten durchschnittlichen Platzausnutzung
     with col1:
-        st.write("**Prozentuale Differenz zur durchschnittlichen deutschen Auslastung (18.7 %, VDV Statistik 2022):**")
+        st.write("**Berechnete durchschnittliche Platzausnutzung:**")
     with col2:
-        st.write(f"{(adjusted_occupancy - initial_occupancy) / initial_occupancy * 100:.2f}%")
-    
-    # Vierte Zeile
+        st.write(f"{calculated_occupancy:.2f}%")
+    st.caption("Berechnet als (Personenkilometer / Platzkilometer) * 100.")
+
+    # Erklärung der Berechnungen
+    st.info("""
+    **Berechnungen:**
+    - **Personenkilometer**: Das Produkt aus beförderten Personen und der zurückgelegten Entfernung in Kilometern.
+    - **Platzkilometer**: Das Produkt aus Nutzwagenkilometern und der Platzzahl (Sitz- und Stehplätze) der einzelnen Fahrzeuge.
+    - **Durchschnittliche Platzausnutzung**: Wird berechnet als (Personenkilometer / Platzkilometer) * 100.
+    - **CO2e-Ausstoß (WTW)**: Basierend auf der durchschnittlichen Platzausnutzung in Deutschland (18.7 %, VDV Statistik 2022), wird der CO2eäq-Wert (80.54 g CO2ee/Pkm, Umweltfreundlich mobil! Umweltbundesamt, 2021) auf Basis der WTW-Betrachtung angepasst.
+    """)
+
+    # Part 2: Adjust Platzausnutzung and calculate CO2e emissions
+with st.expander('**2.2 Anpassung der Platzausnutzung und CO2e-Emissionen**'):
+    st.info("**Hinweis:** Passen Sie die durchschnittliche Platzausnutzung Ihres Bussystems an, um den neuen CO2e-Wert zu berechnen. Dieser angepasste CO2e-Wert wird anschließend mit dem CO2e-Ausstoß des Ridepooling-Systems verglichen.")
+    adjusted_occupancy = st.slider("Angepasste durchschnittliche Platzausnutzung (%)", min_value=0.1, max_value=100.0, value=initial_occupancy, step=0.1)
+    st.caption("Passen Sie die durchschnittliche Platzausnutzung an, um den neuen CO2e-Wert zu berechnen.")
+
+    # Berechnung des neuen CO2e-Wertes basierend auf der angepassten Platzausnutzung
+    new_CO2eq_wtw = calculate_new_CO2eq_wtw(initial_CO2e_wtw, initial_occupancy, adjusted_occupancy)
+
+    # Erstelle zwei Spalten für die Anzeige
     col1, col2 = st.columns([3, 1])
+
+    # Anzeige des angepassten CO2eq-Ausstoßes
     with col1:
-        st.write("**CO2-Emissionen Ridepooling-System:**")
+        st.write(f"**Angepasster CO2eq-Ausstoß (WTW) bei {adjusted_occupancy:.2f}% Auslastung:**")
     with col2:
-        st.write(f"{st.session_state['co2_emissionen_pro_personenkilometer_rps_g']:.2f} g CO2e/Pkm")
-    
-compare_emissions()
+        st.write(f"{new_CO2eq_wtw:.2f} g CO2eq/Pkm")
+
+
+    ################################################################ Vergleich ################################################################
+st.subheader('3.Vergleich der CO2eq-Emissionen')
+
+with st.expander("**3.1 Vergleich der CO2eq-Emissionen von Bus und Ridepooling-System**"):
+
+    def compare_emissions():
+        if 'CO2eq_emissionen_pro_personenkilometer_rps_g' not in st.session_state:
+            st.error("CO2eq-Emissionen des Ridepooling-Systems sind nicht verfügbar.")
+            return
+        st.info("**Hinweis:** Im Folgenden wird der CO2eq-Ausstoß des Bus-Systems mit dem CO2eq-Ausstoß des Ridepooling-Systems verglichen. Die Daten für das Bus-System werden in Kapitel 2 berechnet, die des Ridepooling-Systems in Abschnitt 1.")
+        #Nimm den Namen des Ridepooling-Systems aus dem Sitzungszustand
+        name_ridepooling_system = st.session_state['name_ridepooling_system']
+
+        # Erstellung des Diagramms
+        fig2 = go.Figure()
+        ridepooling_system_name = "Ridepooling-System"
+        fig2.add_trace(go.Bar(name=name_ridepooling_system, x=[name_ridepooling_system], y=[st.session_state['CO2eq_emissionen_pro_personenkilometer_rps_g']], marker_line_color='rgb(0,0,0)', marker_line_width=1.5, opacity=0.7))
+        fig2.add_trace(go.Bar(name='Bus', x=['Bus'], y=[new_CO2eq_wtw], marker_line_color='rgb(0,0,0)', marker_line_width=1.5, opacity=0.7))
+        fig2.update_layout(
+            barmode='group',
+            title='Vergleich der CO2eq-Emissionen pro Personenkilometer',
+            legend=dict(
+                orientation="v",  # vertikale Anordnung
+                y=0.6,  # Positionierung der Legende
+                x=1.02,  # Legende rechts vom Diagramm
+                xanchor='left',
+                yanchor='top'
+            ),
+            width=650,
+            height=650,
+            yaxis_title='Emissionen [g CO2eq/pkm]',
+            xaxis_tickangle=-45
+        )
+        st.plotly_chart(fig2)
+            # Erstelle zwei Spalten für jede Zeile
+        col1, col2 = st.columns([3, 1])  # Verhältnis 3:1 sorgt dafür, dass die linke Spalte breiter ist
+        
+        # Erste Zeile
+        with col1:
+            st.write("**CO2eq-Emissionen Bus (angepasst):**")
+        with col2:
+            st.write(f"{new_CO2eq_wtw:.2f} g CO2eq/Pkm")
+        
+        # Zweite Zeile
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.write("**Auslastung Bus (angepasst):**")
+        with col2:
+            st.write(f"{adjusted_occupancy:.2f}%")
+        
+        # Dritte Zeile
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.write("**Prozentuale Differenz zur durchschnittlichen deutschen Auslastung (18.7 %, VDV Statistik 2022):**")
+        with col2:
+            st.write(f"{(adjusted_occupancy - initial_occupancy) / initial_occupancy * 100:.2f}%")
+        
+        # Vierte Zeile
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.write("**CO2eq-Emissionen Ridepooling-System:**")
+        with col2:
+            st.write(f"{st.session_state['CO2eq_emissionen_pro_personenkilometer_rps_g']:.2f} g CO2eq/Pkm")
+        
+    compare_emissions()
 
 # Footer
 st.markdown("---")
 st.write("***Entwurfsfassung***")
-st.write("© 2024 [FH Münster](https://www.fh-muenster.de.de/)")
-st.write("Dieses Programm wurde im Rahmen des Projekts (https://www.loopmuenster.de/) entwickelt.")
+st.write("Dieses Programm wurde  im Projekt 'Bewertung der ökologischen Effekte von Ridepooling-Systemen anhand von vier Fallbeispielen in NRW' entwickelt und durch das Ministerium für Umwelt, Naturschutz, und Verkehr des Landes Nordrhein-Westfalens gefördert. © 2024 [FH Münster](https://www.fh-muenster.de.de/)")
 st.write("Die Berechnungen basieren auf den Annahmen und Daten, die Sie in den verschiedenen Abschnitten des Programms eingegeben haben.")
 st.write("Die Ergebnisse dienen nur zu Informationszwecken und sind nicht verbindlich.")
 st.write("Für Fragen oder Anregungen wenden Sie sich bitte an [peter.bruder@fh-muenster.de](mailto:peter.bruder@fh-muenster.de).")
-
-
