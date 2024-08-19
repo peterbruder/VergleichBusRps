@@ -7,8 +7,6 @@ import toml
 
 # Setze das Thema aus der config.toml Datei
 
-st.set_page_config(page_title="Vergleich der CO2eq-Emissionen von Bus- und Ridepooling-Systemen", layout="centered", initial_sidebar_state="auto")
-
 # Funktion zur Anzeige der Sidebar
 def show_sidebar():
     st.sidebar.image("Logo_of_Fachhochschule_Münster.png", use_column_width=True)
