@@ -7,8 +7,6 @@ import toml
 
 # Setze das Thema aus der config.toml Datei
 
-config = toml.load("config.toml")
-
 st.set_page_config(page_title="Vergleich der CO2eq-Emissionen von Bus- und Ridepooling-System", layout="centered", initial_sidebar_state="auto")
 
 # Funktion zur Anzeige der Sidebar
@@ -588,7 +586,7 @@ with st.expander('**2.1 Berechnung der durchschnittlichen Platzausnutzung des Bu
 with st.expander('**2.2 Anpassung der Platzausnutzung und CO2e-Emissionen**'):
     st.info("**Hinweis:** Passen Sie die durchschnittliche Platzausnutzung Ihres Bussystems an, um den neuen CO2e-Wert zu berechnen. Dieser angepasste CO2e-Wert wird anschließend mit dem CO2e-Ausstoß des Ridepooling-Systems verglichen.")
     adjusted_occupancy = st.slider("Angepasste durchschnittliche Platzausnutzung (%)", min_value=0.1, max_value=100.0, value=initial_occupancy, step=0.1)
-    st.caption("Passen Sie die durchschnittliche Platzausnutzung an, um den neuen CO2e-Wert zu berechnen.")
+    st.caption("Passen Sie die durchschnittliche Platzausnutzung an, um den neuen CO2eq-Wert zu berechnen.")
 
     # Berechnung des neuen CO2e-Wertes basierend auf der angepassten Platzausnutzung
     new_CO2eq_wtw = calculate_new_CO2eq_wtw(initial_CO2e_wtw, initial_occupancy, adjusted_occupancy)
