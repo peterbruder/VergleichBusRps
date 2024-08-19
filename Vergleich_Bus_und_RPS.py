@@ -670,7 +670,7 @@ with st.expander("**3.1 Vergleich der CO2eq-Emissionen von Bus und Ridepooling-S
 # Footer
 st.markdown("---")
 st.write("***Entwurfsfassung***")
-st.write("Dieses Programm wurde  im Projekt 'Bewertung der ökologischen Effekte von Ridepooling-Systemen anhand von vier Fallbeispielen in NRW' entwickelt und durch das Ministerium für Umwelt, Naturschutz, und Verkehr des Landes Nordrhein-Westfalens gefördert. © 2024 [FH Münster](https://www.fh-muenster.de.de/)")
+st.write("Dieses Programm wurde  im Projekt 'Bewertung der ökologischen Effekte von Ridepooling-Systemen anhand von vier Fallbeispielen in NRW' entwickelt und durch das Ministerium für Umwelt, Naturschutz, und Verkehr des Landes Nordrhein-Westfalens gefördert. © 2024 [FH Münster](https://www.fh-muenster.de/)")
 st.write("Die Berechnungen basieren auf den Annahmen und Daten, die Sie in den verschiedenen Abschnitten des Programms eingegeben haben.")
 st.write("Die Ergebnisse dienen nur zu Informationszwecken und sind nicht verbindlich.")
 st.write("Für Fragen oder Anregungen wenden Sie sich bitte an [peter.bruder@fh-muenster.de](mailto:peter.bruder@fh-muenster.de).")
