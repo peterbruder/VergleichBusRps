@@ -33,7 +33,7 @@ def show_sidebar():
 
 def show_methodik():
     with st.expander("**Methodik**"):
-        st.write("Das Programm dient zur Bewertung der Umweltwirkung von Ridepooling-Systemen im Vergleich zu konventionellen Bussystemen. Ziel ist es, die CO2eq-Emissionen pro Personenkilometer (g CO2eq/Pkm) zu berechnen und diese gegenüberzustellen.")
+        st.write("Das Programm dient zur Bestimmung der CO2eq-Emissionen von Ridepooling-Systemen im Vergleich zu konventionellen Bussystemen. Ziel ist es, die CO2eq-Emissionen pro Personenkilometer (g CO2eq/Pkm) zu berechnen und diese gegenüberzustellen.")
         
         st.write("**Methodische Vorgehensweise:**")
 
@@ -439,21 +439,21 @@ def show_environmental_impact_calculation():
                 'strom_emissionen': strom_emissionen
             })
 
-            CO2e_emissionen_gesamt_rps = round(benzin_emissionen + diesel_emissionen + strom_emissionen, 4)
-            CO2e_emissionen_pro_personenkilometer_rps = round(CO2e_emissionen_gesamt_rps / personenkilometer_gefahren, 4) if personenkilometer_gefahren else 0
+            CO2eq_emissionen_gesamt_rps = round(benzin_emissionen + diesel_emissionen + strom_emissionen, 4)
+            CO2eq_emissionen_pro_personenkilometer_rps = round(CO2eq_emissionen_gesamt_rps / personenkilometer_gefahren, 4) if personenkilometer_gefahren else 0
 
             # Umrechnung in g CO2ee pro Pkm
-            CO2e_emissionen_pro_personenkilometer_rps_g = CO2e_emissionen_pro_personenkilometer_rps * 1000  # Umrechnung in g CO2ee/Pkm
+            CO2eq_emissionen_pro_personenkilometer_rps_g = CO2eq_emissionen_pro_personenkilometer_rps * 1000  # Umrechnung in g CO2ee/Pkm
 
             # Speichern der berechneten Werte im Sitzungszustand
             st.session_state.update({
-                'CO2e_emissionen_gesamt_rps': CO2e_emissionen_gesamt_rps,
-                'CO2e_emissionen_pro_personenkilometer_rps_g': CO2e_emissionen_pro_personenkilometer_rps_g
+                'CO2eq_emissionen_gesamt_rps': CO2eq_emissionen_gesamt_rps,
+                'CO2eq_emissionen_pro_personenkilometer_rps_g': CO2eq_emissionen_pro_personenkilometer_rps_g
             })
 
             # Emissionen pro pkm für verschiedene Verkehrsträger
             emissionen_data = {
-                st.session_state['name_ridepooling_system']: CO2e_emissionen_pro_personenkilometer_rps_g,
+                st.session_state['name_ridepooling_system']: CO2eq_emissionen_pro_personenkilometer_rps_g,
                 'MIV (Fahrer)': 152.86,
                 'Bus': 80.54,
                 'Straßenbahn/U-Bahn': 59.30,
@@ -486,15 +486,15 @@ def show_environmental_impact_calculation():
 
             col1, col2 = st.columns([3, 1])
             with col1:
-                st.write(f"**Gesamte CO2e-Emissionen des Ridepooling-Systems:**")
+                st.write(f"**Gesamte CO2eq-Emissionen des Ridepooling-Systems:**")
             with col2:
-                st.write(f"**{CO2e_emissionen_gesamt_rps:.2f} kg CO2e**")
+                st.write(f"**{CO2eq_emissionen_gesamt_rps:.2f} kg CO2e**")
 
             col1, col2 = st.columns([3, 1])
             with col1:
-                st.write(f"**CO2e-Emissionen pro Personenkilometer:**")
+                st.write(f"**CO2eq-Emissionen pro Personenkilometer:**")
             with col2:
-                st.write(f"**{CO2e_emissionen_pro_personenkilometer_rps_g:.2f} g CO2e/pkm**")
+                st.write(f"**{CO2eq_emissionen_pro_personenkilometer_rps_g:.2f} g CO2e/pkm**")
 
 # Initialisiere Session State Variablen
 initialize_session_state()
@@ -503,11 +503,11 @@ initialize_session_state()
 show_sidebar()
 
 # Grundlegende Konfiguration
-st.title('Entwurf: Vergleich der CO2e-Emissionen von Bus- und Ridepooling-System')
+st.title('Entwurf: Vergleich der CO2eq-Emissionen von Bus- und Ridepooling-System')
 
 show_methodik()
 
-st.subheader("1. Berechnung der CO2e-Emissionen des Ridepooling-Systems")
+st.subheader("1. Berechnung der CO2eq-Emissionen des Ridepooling-Systems")
 # Zeige Allgemeine Informationen an
 show_general_info()
 
@@ -527,7 +527,7 @@ show_environmental_impact_calculation()
 
 ################################################################ Berechnung Bus ################################################################
 # Constants
-initial_CO2e_wtw = 80.54  # g CO2eeg/Pkm (Well-to-Wheel)
+initial_CO2eq_wtw = 80.54  # g CO2eeg/Pkm (Well-to-Wheel)
 initial_occupancy = 18.7  # % (VDV Statistik 2022)
 
 # Function to calculate Platzausnutzung
@@ -589,7 +589,7 @@ with st.expander('**2.2 Anpassung der Platzausnutzung und CO2eq-Emissionen**'):
     st.caption("Passen Sie die durchschnittliche Platzausnutzung an, um den neuen CO2eq-Wert zu berechnen.")
 
     # Berechnung des neuen CO2e-Wertes basierend auf der angepassten Platzausnutzung
-    new_CO2eq_wtw = calculate_new_CO2eq_wtw(initial_CO2e_wtw, initial_occupancy, adjusted_occupancy)
+    new_CO2eq_wtw = calculate_new_CO2eq_wtw(initial_CO2eq_wtw, initial_occupancy, adjusted_occupancy)
 
     # Erstelle zwei Spalten für die Anzeige
     col1, col2 = st.columns([3, 1])
