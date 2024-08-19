@@ -583,7 +583,7 @@ with st.expander('**2.1 Berechnung der durchschnittlichen Platzausnutzung des Bu
     """)
 
     # Part 2: Adjust Platzausnutzung and calculate CO2e emissions
-with st.expander('**2.2 Anpassung der Platzausnutzung und CO2e-Emissionen**'):
+with st.expander('**2.2 Anpassung der Platzausnutzung und CO2eq-Emissionen**'):
     st.info("**Hinweis:** Passen Sie die durchschnittliche Platzausnutzung Ihres Bussystems an, um den neuen CO2e-Wert zu berechnen. Dieser angepasste CO2e-Wert wird anschließend mit dem CO2e-Ausstoß des Ridepooling-Systems verglichen.")
     adjusted_occupancy = st.slider("Angepasste durchschnittliche Platzausnutzung (%)", min_value=0.1, max_value=100.0, value=initial_occupancy, step=0.1)
     st.caption("Passen Sie die durchschnittliche Platzausnutzung an, um den neuen CO2eq-Wert zu berechnen.")
