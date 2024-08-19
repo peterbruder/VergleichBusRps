@@ -6,6 +6,7 @@ import numpy as np
 import toml
 
 # Setze das Thema aus der config.toml Datei
+config = toml.load(".streamlit/config.toml")
 
 # Funktion zur Anzeige der Sidebar
 def show_sidebar():
