@@ -601,7 +601,7 @@ with st.expander('**2.2 Anpassung der Platzausnutzung und CO2eq-Emissionen**'):
 
 
     ################################################################ Vergleich ################################################################
-st.subheader('3.Vergleich der CO2eq-Emissionen')
+st.subheader('3. Vergleich der CO2eq-Emissionen')
 
 with st.expander("**3.1 Vergleich der CO2eq-Emissionen von Bus und Ridepooling-System**"):
 
