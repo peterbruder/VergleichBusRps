@@ -44,10 +44,6 @@ def show_methodik():
         - **Vergleich mit Bussystem:** Das Programm berechnet die durchschnittliche Platzausnutzung eines Busses und den entsprechenden CO2eq-Ausstoß pro Personenkilometer, angepasst an unterschiedliche Auslastungen. Diese Werte werden mit denen des Ridepooling-Systems verglichen.
 
         - **Visualisierung:** Die Ergebnisse werden grafisch dargestellt, um die CO2eq-Emissionen pro Personenkilometer für beide Systeme direkt zu vergleichen.
-                 
-        **Sonstige Anmerkungen:**
-        - Die Berechnung beruht lediglich auf monomdalen Fahrten.
-        - Die Umweltwirkung wird anhand der CO2eq-Emissionen bewertet. Andere Umweltkategoierien (z.B. Luftschadstoffe, Lärm) werden zur Zeit nicht berücksichtigt.
         """)
 
 
