@@ -269,7 +269,7 @@ def show_vehicle_fleet_performance():
                     with col2:
                         st.write(f"{besetzungsquote}")
 
-                    st.write("**Verbrauchsdaten**")
+                    st.write("**Verbrauchsdaten Fahrzeugflotte**")
                     
                     col1, col2 = st.columns([3, 1])
                     with col1:
@@ -540,19 +540,20 @@ def calculate_new_CO2eq_wtw(initial_CO2eq, initial_occupancy, adjusted_occupancy
 # Part 1: Calculate Platzausnutzung
 st.subheader('2. Berechnung CO2eq-Emissionen Bus')
 with st.expander('**2.1 Berechnung der durchschnittlichen Platzausnutzung des Bus-Systems**'):
-    st.info("**Hinweis:** Die vorausgefüllten Daten beziehen sich auf die durchschnittliche Platzausnutzung im deutschen Durchschnitt (VDV Statistik 2022). Sie können die durchschnittliche Platzausnutzung spezifisch für Ihr Bussystem berechnen. Sie können den errechneten Wert im Folgenden Schritt einsetzen, um einen Vergleich der CO2eq-Emissionen zu erhalten.")
+    st.info("**Hinweis:** Die vorausgefüllten Daten beziehen sich auf die durchschnittliche Platzausnutzung im deutschen Durchschnitt (VDV Statistik 2022). Sie können die durchschnittliche Platzausnutzung spezifisch für Ihr Bussystem berechnen. Sie können den errechneten Wert im folgenden Schritt einsetzen, um einen Vergleich der CO2eq-Emissionen zu erhalten.")
     # Eingabefelder für Personen- und Platzkilometer
-    personen_km = st.number_input("Personenkilometer [Mio.]", min_value=0.0, value=24311.0, step=0.1, format="%.1f")
-    st.caption("Produkt aus beförderten Personen und der zurückgelegten Entfernung in Kilometern.")
-
+    
     Nutzwagen_km = st.number_input("Nutzwagenkilometer [Mio.]", min_value=0.0, value=1658.0, step=0.1, format="%.1f")
-    st.caption("Platzkilometer: Produkt aus Nutzwagenkilometer und Platzzahl (Sitz- und Stehplätze) jeweils der einzelnen Fahrzeuge (Berechnung nach VDV-Richtlinien von 1990).")
-
-    Platzzahl= st.number_input("Platzzahl (Sitz- und Stehplätze) der einzelnen Fahrzeuge", min_value=0.0, value=78.5186, step=0.1, format="%.2f")
+    st.caption("Anzahl der Kilometer im Linienverkehr zurückgelegten Produktivkilometer. Dazu kommen dann noch die Leerkilometer (Einsatzfahrten etc.), die die Verkehrsleistung des Unternehmens beschreiben (Glossar des Nahverkehrs, RVM 2024)")
+    
+    Platzangebot= st.number_input("Platzangebot (Sitz- und Stehplätze) der einzelnen Fahrzeuge", min_value=0.0, value=78.5186, step=0.1, format="%.2f")
     st.caption("Anzahl der durchschnittlichen Sitz- und Stehplätze der einzelnen Fahrzeuge.")
 
+    personen_km = st.number_input("Personenkilometer [Mio.]", min_value=0.0, value=24311.0, step=0.1, format="%.1f")
+    st.caption("Produkt aus beförderten Personen und der zurückgelegten Entfernung in Kilometern.")
+    
     # Berechnung der Platzkilometer
-    platz_km = Nutzwagen_km * Platzzahl
+    platz_km = Nutzwagen_km * Platzangebot
     col1, col2 = st.columns([3, 1])
     # Anzeige der berechneten Platzkilometer
     with col1:
@@ -560,7 +561,7 @@ with st.expander('**2.1 Berechnung der durchschnittlichen Platzausnutzung des Bu
     with col2:
         st.write(f"{platz_km:.2f}")
 
-    st.caption("Produkt aus Nutzwagenkilometer und Platzzahl (Sitz- und Stehplätze) jeweils der einzelnen Fahrzeuge.")
+    st.caption("Produkt aus Nutzwagenkilometer und Platzangebot (Sitz- und Stehplätze) jeweils der einzelnen Fahrzeuge (Berechnung nach VDV-Richtlinien von 1990).")
 
     # Berechnung der Platzausnutzung
     calculated_occupancy = calculate_platzausnutzung(personen_km, platz_km)
@@ -576,14 +577,14 @@ with st.expander('**2.1 Berechnung der durchschnittlichen Platzausnutzung des Bu
     st.info("""
     **Berechnungen:**
     - **Personenkilometer**: Das Produkt aus beförderten Personen und der zurückgelegten Entfernung in Kilometern.
-    - **Platzkilometer**: Das Produkt aus Nutzwagenkilometern und der Platzzahl (Sitz- und Stehplätze) der einzelnen Fahrzeuge.
+    - **Platzkilometer**: Das Produkt aus Nutzwagenkilometern und der Platzangebot (Sitz- und Stehplätze) der einzelnen Fahrzeuge.
     - **Durchschnittliche Platzausnutzung**: Wird berechnet als (Personenkilometer / Platzkilometer) * 100.
     - **CO2eq-Ausstoß (WTW)**: Basierend auf der durchschnittlichen Platzausnutzung in Deutschland (18.7 %, VDV Statistik 2022), wird der CO2eäq-Wert (80.54 g CO2ee/Pkm, Umweltfreundlich mobil! Umweltbundesamt, 2021) auf Basis der WTW-Betrachtung angepasst.
     """)
 
     # Part 2: Adjust Platzausnutzung and calculate CO2e emissions
 with st.expander('**2.2 Anpassung der Platzausnutzung und CO2eq-Emissionen**'):
-    st.info("**Hinweis:** Passen Sie die durchschnittliche Platzausnutzung Ihres Bussystems an, um den neuen CO2eq-Wert zu berechnen. Dieser angepasste CO2eq-Wert wird anschließend mit dem CO2eq-Ausstoß des Ridepooling-Systems verglichen.")
+    st.info("**Hinweis:** Passen Sie die durchschnittliche Platzausnutzung Ihres Bussystems an, um den neuen CO2eq-Wert zu berechnen. Dieser angepasste CO2eq-Wert wird anschließend mit dem CO2eq-Ausstoß des Ridepooling-Systems verglichen. Voreingestellt sind die bundesweiten Werte, welche bei der Berechnung des Umweltbundesamtes ('umweltfreundlich mobil!', 2022) hinterlegt sind.")
     adjusted_occupancy = st.slider("Angepasste durchschnittliche Platzausnutzung (%)", min_value=0.1, max_value=100.0, value=initial_occupancy, step=0.1)
     st.caption("Passen Sie die durchschnittliche Platzausnutzung an, um den neuen CO2eq-Wert zu berechnen.")
 
