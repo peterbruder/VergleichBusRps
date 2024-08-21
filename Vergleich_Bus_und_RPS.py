@@ -261,7 +261,7 @@ def show_vehicle_fleet_performance():
                     with col1:
                         st.write("Bündelungsquote (nach § 50 Absatz 3 PBefG):")
                     with col2:
-                        st.write(f"{buendelungsquote}")
+                        st.write(f"{buendelungsquote:2f}")
 
                     col1, col2 = st.columns([3, 1])
                     with col1:
