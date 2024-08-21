@@ -666,7 +666,7 @@ with st.expander("**3.1 Vergleich der CO2eq-Emissionen von Bus und Ridepooling-S
         - Die Berechnung der CO2eq-Emissionen des Ridepooling-Systems berücksichtigt ausschließlich monomodale Fahrten. Zu- oder Abfahrtswege vor oder nach einer Ridepooling-Fahrt können nicht berücksichtigt werden.
         - Die Umweltwirkung wird anhand der CO2eq-Emissionen bewertet. Andere Umweltkategorien (z.B. Luftschadstoffe, Lärm) werden zur Zeit nicht berücksichtigt.
         - Eine Berücksichtigung von E-Busfahrzeugen geschieht zwar indirekt über die Emissionsdaten des Umweltbundesamt ('umweltfreundlich mobil!', 2022). Die Datengrundlage kann zur Zeit nicht angepasst werden.
-        - Die Auslastung wird lediglich für den 24-Stunden-Betrieb wiedergegeben (Umweltbundesamt, 'umweltfreundlich mobil!', 2022). Die Datengrundlage kann zur Zeit nicht angepasst werden.
+        - Die durchschnittliche Platzausnutzung kann lediglich für den 24-Stunden-Betrieb angegeben werden (Umweltbundesamt, 'umweltfreundlich mobil!', 2022). Die Datengrundlage kann zur Zeit nicht angepasst werden.
         """)
     compare_emissions()
 
