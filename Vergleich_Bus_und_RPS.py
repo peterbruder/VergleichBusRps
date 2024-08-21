@@ -579,7 +579,7 @@ with st.expander('**2.1 Berechnung der durchschnittlichen Platzausnutzung des Bu
     - **Personenkilometer**: Das Produkt aus beförderten Personen und der zurückgelegten Entfernung in Kilometern.
     - **Platzkilometer**: Das Produkt aus Nutzwagenkilometern und der Platzangebot (Sitz- und Stehplätze) der einzelnen Fahrzeuge.
     - **Durchschnittliche Platzausnutzung**: Wird berechnet als (Personenkilometer / Platzkilometer) * 100.
-    - **CO2eq-Ausstoß (WTW)**: Basierend auf der durchschnittlichen Platzausnutzung in Deutschland (18.7 %, VDV Statistik 2022), wird der CO2eäq-Wert (80.54 g CO2ee/Pkm, Umweltfreundlich mobil! Umweltbundesamt, 2021) auf Basis der WTW-Betrachtung angepasst.
+    - **CO2eq-Ausstoß (WTW)**: Basierend auf der durchschnittlichen Platzausnutzung in Deutschland (18.7 %, VDV Statistik 2022), wird der CO2eq-Wert (80.54 g CO2eq/Pkm, Umweltfreundlich mobil! Umweltbundesamt, 2021) auf Basis der WTW-Betrachtung angepasst.
     """)
 
     # Part 2: Adjust Platzausnutzung and calculate CO2e emissions
@@ -664,6 +664,12 @@ with st.expander("**3.1 Vergleich der CO2eq-Emissionen von Bus und Ridepooling-S
             st.write("**CO2eq-Emissionen Ridepooling-System:**")
         with col2:
             st.write(f"{st.session_state['CO2eq_emissionen_pro_personenkilometer_rps_g']:.2f} g CO2eq/Pkm")
+
+        st.info("""
+        - Die Berechnung der CO2eq-Emissionen des Ridepooling-Systems berücksichtigt ausschließlich monomodale Fahrten. Zu- oder Abfahrtswege vor oder nach einer Ridepooling-Fahrt können nicht berücksichtigt werden.
+        - Die Umweltwirkung wird anhand der CO2eq-Emissionen bewertet. Andere Umweltkategorien (z.B. Luftschadstoffe, Lärm) werden zur Zeit nicht berücksichtigt.
+        - Eine Berücksichtigung von E-Busfahrzeugen geschieht zwar indirekt über die Emissionsdaten des Umweltbundesamt ('umweltfreundlich mobil!', 2022). Die Datengrundlage kann zur Zeit nicht angepasst werden.
+        - Die Auslastung wird lediglich für den 24-Stunden-Betrieb wiedergegeben (Umweltbundesamt, 'umweltfreundlich mobil!', 2022). Die Datengrundlage kann zur Zeit nicht angepasst werden.
         
     compare_emissions()
 
