@@ -5,6 +5,19 @@ import pandas as pd
 import numpy as np
 import toml
 
+st.set_page_config(page_title="OekoRPS")
+
+# Custom CSS to hide the + and - buttons
+hide_buttons_css = """
+    <style>
+    .stNumberInput button.step-up, .stNumberInput button.step-down {
+        display: none;
+    }
+    </style>
+"""
+# Inject the custom CSS into the Streamlit app
+st.markdown(hide_buttons_css, unsafe_allow_html=True)
+
 # Setze das Thema aus der config.toml Datei
 config = toml.load(".streamlit/config.toml")
 
