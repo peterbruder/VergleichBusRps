@@ -45,7 +45,7 @@ def show_sidebar():
 
 def show_methodik():
     with st.expander("**Methodik**"):
-        st.write("Das Programm dient zur Bestimmung der CO2eq-Emissionen von Ridepooling-Systemen im Vergleich zu konventionellen Bussystemen. Ziel ist es, die CO2eq-Emissionen pro Personenkilometer (g CO2eq/Pkm) zu berechnen und diese gegenüberzustellen.")
+        st.write("Das Programm dient zur Bestimmung der CO2eq-Emissionen von Ridepooling-Systemen im Vergleich zu konventionellen Bussystemen. Ziel ist es, die CO2eq-Emissionen pro Personenkilometer (g CO2eq/Pkm) zu berechnen und diese gegenüberzustellen. Dabei wird auch der CO2eq-Ausstoß des Busses anhand seiner Platzausnutzung berechnet und dem des Ridepooling-Systems gegenübergestellt. Diese Auswertung ist besonders sinnvoll, um die ökologische Nachhaltigkeit verschiedener Verkehrssysteme fundiert zu bewerten. Durch den Vergleich der CO2eq-Emissionen beider Systeme kann aufgezeigt werden, wie effizient sie in Bezug auf Platzausnutzung und Emissionsvermeidung sind. Dies hilft, Potenziale zur Reduzierung von Emissionen durch optimierte Platzausnutzung oder alternative Mobilitätskonzepte zu identifizieren und somit fundierte Entscheidungen für eine umweltfreundlichere Mobilität zu treffen.")
         
         st.write("**Methodische Vorgehensweise:**")
 
@@ -54,9 +54,8 @@ def show_methodik():
 
         - **Berechnung der Umweltwirkungen:** Basierend auf den Eingabedaten werden die Gesamtemissionen (Benzin, Diesel, Strom) des Ridepooling-Systems berechnet. Die Emissionen pro Personenkilometer werden ermittelt.
 
-        - **Vergleich mit Bussystem:** Das Programm berechnet die durchschnittliche Platzausnutzung eines Busses und den entsprechenden CO2eq-Ausstoß pro Personenkilometer, angepasst an unterschiedliche Auslastungen. Diese Werte werden mit denen des Ridepooling-Systems verglichen.
+        - **Vergleich mit Bussystem:** Das Programm berechnet die durchschnittliche Platzausnutzung eines Busses und den entsprechenden CO2eq-Ausstoß pro Personenkilometer, angepasst an unterschiedliche Platzausnutzungen. Diese Werte werden mit denen des Ridepooling-Systems verglichen.
 
-        - **Visualisierung:** Die Ergebnisse werden grafisch dargestellt, um die CO2eq-Emissionen pro Personenkilometer für beide Systeme direkt zu vergleichen.
         """)
 
 
@@ -605,7 +604,7 @@ with st.expander('**2.2 Anpassung der Platzausnutzung und CO2eq-Emissionen**'):
 
     # Anzeige des angepassten CO2eq-Ausstoßes
     with col1:
-        st.write(f"**Angepasster CO2eq-Ausstoß (WTW) bei {adjusted_occupancy:.2f}% Auslastung:**")
+        st.write(f"**Angepasster CO2eq-Ausstoß (WTW) bei {adjusted_occupancy:.2f}% Platzausnutzung:**")
     with col2:
         st.write(f"{new_CO2eq_wtw:.2f} g CO2eq/Pkm")
 
@@ -656,14 +655,14 @@ with st.expander("**3.1 Vergleich der CO2eq-Emissionen von Bus und Ridepooling-S
         # Zweite Zeile
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.write("**Auslastung Bus (angepasst):**")
+            st.write("**Platzausnutzung Bus (angepasst):**")
         with col2:
             st.write(f"{adjusted_occupancy:.2f}%")
         
         # Dritte Zeile
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.write("**Prozentuale Differenz zur durchschnittlichen deutschen Auslastung (18.7 %, VDV Statistik 2022):**")
+            st.write("**Prozentuale Differenz zur durchschnittlichen deutschen Platzausnutzung (18.7 %, VDV Statistik 2022):**")
         with col2:
             st.write(f"{(adjusted_occupancy - initial_occupancy) / initial_occupancy * 100:.2f}%")
         
