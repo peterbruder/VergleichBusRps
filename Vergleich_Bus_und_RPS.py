@@ -353,7 +353,7 @@ def show_emissions_data():
         elif benzin_emissionsdaten_auswahl == "CO2online [CO2eq]":
             benzin_emissionsdaten = 2370  # g/l
         else:  # Eigene Angaben
-            benzin_emissionsdaten = st.number_input("Geben Sie die CO2eq-Emissionsdaten (Benzin) [g/l] ein:", min_value=0.0, format='%f', step=1)
+            benzin_emissionsdaten = st.number_input("Geben Sie die CO2-Emissionsdaten (Benzin) [g/l] ein:", min_value=0, format='%d', step=1)
 
         # CO2eq-Emissionsdaten (Diesel)
         diesel_emissionsdaten_auswahl = st.selectbox("CO2eq-Emissionsdaten (Diesel):", 
@@ -363,7 +363,7 @@ def show_emissions_data():
         elif diesel_emissionsdaten_auswahl == "CO2eqonline [CO2eq]":
             diesel_emissionsdaten = 2650  # g/l
         else:  # Eigene Angaben
-            diesel_emissionsdaten = st.number_input("Geben Sie die CO2eq-Emissionsdaten (Diesel) [g/l] ein:", min_value=0.0, format='%f',step=1)
+            diesel_emissionsdaten = st.number_input("Geben Sie die CO2-Emissionsdaten (Diesel) [g/l] ein:", min_value=0, format='%d', step=1)
 
         # CO2eq-Emissionsdaten (Strom)
         strom_emissionsdaten_auswahl = st.selectbox("CO2eq-Emissionsdaten (Strom):", 
@@ -375,7 +375,7 @@ def show_emissions_data():
         elif strom_emissionsdaten_auswahl == "Umweltbundesamt: CO2eq-Emissionsfaktor Strommix (2022)":
             strom_emissionsdaten = 434  # g/kWh
         else:  # Eigene Angaben
-            strom_emissionsdaten = st.number_input("Geben Sie die CO2eq-Emissionsdaten (Strom) [g/kWh] ein:", min_value=0.0, format='%f', step=1)
+            strom_emissionsdaten = st.number_input("Geben Sie die CO2-Emissionsdaten (Strom) [g CO2eq/kWh] ein:", min_value=0, format='%d', step=1)
 
         # Anteil an selbst erzeugtem Strom aus Photovoltaikanlagen
         oekostrom_anteil = st.slider("Anteil des selbst erzeugten Stroms aus Photovoltaikanlagen [%]:", min_value=0, max_value=100, value=0, step=1)
